@@ -7,9 +7,9 @@
       <v-col cols="7" class="bounding_box">
         <v-row><v-col>
           <h1> Annotation </h1>
-          <h3> Progress: {{step}} / 20 </h3>
+          <h3> Progress: {{step}} / 15 </h3>
           <v-progress-linear
-            :value="100*step/20"
+            :value="100*step/15"
             color="deep-purple accent-2"/>
           <br><v-divider/><br>
           <premise :premise_txt="premise"/>
@@ -17,11 +17,12 @@
           </v-col>
         </v-row>
         <v-row justify="end">
-          <v-col cols="10"/>
-          <v-col cols="2">
+          <v-col cols="6"/>
+          <v-col cols="6">
           <v-dialog v-model="dialog" max-width="40%">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
+                style="float:right;"
                 color="error"
                 dark
                 v-bind="attrs"
@@ -38,6 +39,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
+                <v-btn color="error" text @click="dialog = !dialog">Close</v-btn>
                 <v-btn color="purple" text @click="onSubmitIssue">Submit</v-btn>
               </v-card-actions>
             </v-card>
@@ -90,7 +92,7 @@ export default {
           alert('You should complete pre-task questionnaire first!\n');
           self.$store.commit('reset_mturk_id')
           self.$router.push('/introduction')
-        } else if (res.data.step > 20) {
+        } else if (res.data.step > 15) {
           alert('You already finished the task!\n');
           self.$router.push('/after-done')
         }
@@ -116,7 +118,7 @@ export default {
       }).then(function (res) {
         self.snackbar_msg = 'Your response has been recorded!'
         self.snackbar = true
-        if (self.step == 20) {
+        if (self.step == 15) {
           self.$router.push('/after-done')
         } else {
           self.step += 1

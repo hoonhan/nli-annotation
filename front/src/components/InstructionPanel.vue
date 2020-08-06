@@ -1,7 +1,8 @@
 <template>
 <div>
   <h1> Instruction </h1>
-  Given a premise, you should write an appropriate sentence that matches with the following class types.<br><br>
+  Given a sentence(so-called premise), you should write a sentence that matches a specific class type. 
+  In total, you should write three sentences for the same premise, one for each of the following class types.<br><br>
 
   <ul>
   <li> <v-chip color="primary" class="ma-2" label>entailment</v-chip> : Write a sentence that is <b>definitely true</b> regarding the premise.</li>
@@ -12,7 +13,7 @@
   <h3> Notes </h3>
   <ul>
   <li> Your sentence should <b>NOT</b> sound absurd regarding the premise.</li>
-  <li> You should <b>AVOID</b> using pronouns to reduce the ambiguity what the pronoun indicates.</li>
+  <li> You should <b>AVOID</b> using pronouns to reduce the ambiguity of what the pronoun indicates.</li>
   </ul><br> 
 
   <h3> Examples </h3>

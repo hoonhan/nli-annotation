@@ -11,7 +11,7 @@
             editable
             color="deep-purple accent-2"
             :key="`${n}-step`"
-            :complete="texts[n-1] != null"
+            :complete="texts[n-1].trim() != ''"
             :step="n"
           >
             {{ types[n-1] }}
@@ -43,7 +43,7 @@
         <v-btn @click="nextStep(n)" color="deep-purple accent-2" dark class="btn_style">
           {{button_txt}}
         </v-btn>
-        <span :class="warningMsg != null ? 'error_txt' : null ">
+        <span :class="warningMsg != '' ? 'error_txt' : '' ">
           {{warningMsg}}  
         </span>
 
@@ -61,10 +61,10 @@ export default {
   name: 'SubInstruction',
   data: () => {
     return {
-      texts: [null, null, null],
+      texts: ['', '', ''],
       types: ['Entailment', 'Neutral', 'Contradiction'],
       step: 1,
-      warningMsg: null,
+      warningMsg: '',
     }
   },
   props: {
@@ -93,11 +93,12 @@ export default {
   },
   methods: {
     nextStep: function (n) {
+      console.log(this.texts)
       if (n <= 2) {
-        if (this.texts[n-1] === null) {
+        if (this.texts[n-1].trim() === '') {
           this.warningMsg = "** You must fill in all the text field above to continue."
           setTimeout(() => {
-            this.warningMsg = null
+            this.warningMsg = ''
           }, 10000);
           return;
         }
@@ -106,24 +107,24 @@ export default {
         }
       }
       else if (n == 3) {
-        if (this.texts.includes(null)) {
+        if (this.texts.map(x => x.trim()).includes('')) {
           this.warningMsg = "** You must fill in all three text fields to submit."
           setTimeout(() => {
-            this.warningMsg = null
+            this.warningMsg = ''
           }, 10000);
           
           return;
         }
         else {
           this.$emit('submit-write', this.texts)
-          this.texts = [null, null, null]
+          this.texts = ['', '', '']
           this.step = 1
           // What if I reset the texts earlier?
         }
       }
     },
     moveStep: function () {
-      this.warningMsg = null
+      this.warningMsg = ''
     }
 
   },
