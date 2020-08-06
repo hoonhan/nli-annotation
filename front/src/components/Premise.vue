@@ -1,32 +1,31 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-  </div>
+  <v-row>
+  <v-col>
+    <h3> Premise: </h3>
+    <v-card 
+      color="orange lighten-4"
+      class="premise_text">
+      {{ premise_txt }}
+    </v-card>
+  </v-col>
+  </v-row>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Premise',
   props: {
     premise_txt: String
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.premise_text {
+  height: 3em;
+  padding-left: 1em;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
 }
 </style>

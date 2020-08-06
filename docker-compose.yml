@@ -1,0 +1,26 @@
+version: "3"
+services: 
+
+    server:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile 
+        ports:
+            - 8800:8800
+        volumes:
+            - ./backend:/backend
+        # depends_on: 
+        #     - db
+        command: >
+            bash -c '
+            python manage.py runserver 0:8800 &&s
+            python manage.py makemigrations &&
+            python manage.py migrate'
+    
+    # db:
+    #     image: postgres:latest
+    #     ports:
+    #         - 5433:5432
+    #     environment: 
+    #         - POSTGRES_USER=postgres
+    #         - POSTGRES_PASSWORD=postgres
