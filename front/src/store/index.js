@@ -10,7 +10,7 @@ export default new Vuex.Store({
   })],
   state: {
     mturk_id: null,
-    server_url: 'http://localhost:8800/server'
+    server_url: 'http://3.35.47.70:8800/server'
   },
   mutations: {
     set_mturk_id (state, id){
