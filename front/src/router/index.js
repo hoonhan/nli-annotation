@@ -1,38 +1,103 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Landing from '../views/Landing.vue'
-import Introduction from '../views/Introduction.vue'
-import PreSurvey from '../views/PreSurvey.vue'
-import Annotation from '../views/Annotation.vue'
-import AfterDone from '../views/AfterDone.vue'
+import Landing0 from '../views/baseline/Landing.vue'
+import Introduction0 from '../views/baseline/Introduction.vue'
+import PreSurvey0 from '../views/baseline/PreSurvey.vue'
+import Annotation0 from '../views/baseline/Annotation.vue'
+import AfterDone0 from '../views/baseline/AfterDone.vue'
+
+import Landing1 from '../views/artificial/Landing.vue'
+import Introduction1 from '../views/artificial/Introduction.vue'
+import PreSurvey1 from '../views/artificial/PreSurvey.vue'
+import Annotation1 from '../views/artificial/Annotation.vue'
+import AfterDone1 from '../views/artificial/AfterDone.vue'
+
+import Landing2 from '../views/natural/Landing.vue'
+import Introduction2 from '../views/natural/Introduction.vue'
+import PreSurvey2 from '../views/natural/PreSurvey.vue'
+import Annotation2 from '../views/natural/Annotation.vue'
+import AfterDone2 from '../views/natural/AfterDone.vue'
 
 Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/',
-    name: 'Landing',
-    component: Landing
+    path: '/baseline/home',
+    name: 'Landing0',
+    component: Landing0,
+    alias: '/baseline'
   },
   {
-    path: '/introduction',
-    name: 'Introduction',
-    component: Introduction
+    path: '/baseline/introduction',
+    name: 'Introduction0',
+    component: Introduction0
   },
   {
-    path: '/presurvey',
-    name: 'PreSurvey',
-    component: PreSurvey
+    path: '/baseline/presurvey',
+    name: 'PreSurvey0',
+    component: PreSurvey0
   },
   {
-    path: '/annotation',
-    name: 'Annotation',
-    component: Annotation
+    path: '/baseline/annotation',
+    name: 'Annotation0',
+    component: Annotation0
   },
   {
-    path: '/after-done',
-    name: 'AfterDone',
-    component: AfterDone
+    path: '/baseline/after-done',
+    name: 'AfterDone0',
+    component: AfterDone0
+  },
+  {
+    path: '/artificial/home',
+    name: 'Landing1',
+    component: Landing1,
+    alias: '/artificial'
+  },
+  {
+    path: '/artificial/introduction',
+    name: 'Introduction1',
+    component: Introduction1
+  },
+  {
+    path: '/artificial/presurvey',
+    name: 'PreSurvey1',
+    component: PreSurvey1
+  },
+  {
+    path: '/artificial/annotation',
+    name: 'Annotation1',
+    component: Annotation1
+  },
+  {
+    path: '/artificial/after-done',
+    name: 'AfterDone1',
+    component: AfterDone1
+  },
+  {
+    path: '/natural/home',
+    name: 'Landing2',
+    component: Landing2,
+    alias: '/natural'
+  },
+  {
+    path: '/natural/introduction',
+    name: 'Introduction2',
+    component: Introduction2
+  },
+  {
+    path: '/natural/presurvey',
+    name: 'PreSurvey2',
+    component: PreSurvey2
+  },
+  {
+    path: '/natural/annotation',
+    name: 'Annotation2',
+    component: Annotation2
+  },
+  {
+    path: '/natural/after-done',
+    name: 'AfterDone2',
+    component: AfterDone2
   }
 ]
 
