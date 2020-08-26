@@ -5,7 +5,8 @@ export default {
     server_call(self, fn, url) {
         axios.get(self.$store.state.server_url + url, {
           params: {
-            mturk_id: self.$store.state.mturk_id
+            mturk_id: self.$store.state.mturk_id,
+            user_type: self.$store.state.user_type
           }
         }).then(function (res) {
           fn.apply(this, [self, res])
@@ -17,7 +18,7 @@ export default {
       if (self.$store.state.mturk_id === null) {
         alert("You should register your mturk ID to proceed to the task.\n")
         self.$store.commit('reset_mturk_id')
-        self.$router.push('/')
+        self.$router.push('home')
       }
     }
 };

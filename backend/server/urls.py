@@ -7,5 +7,7 @@ urlpatterns = [
     path('record_intro_done/', views.recordIntroDone),
     path('record_pre_done/', views.recordPreDone),
     path('record_submit/', views.recordSubmit),
-    path('record_issue/', views.recordIssue)
+    path('record_issue/', views.recordIssue),
+    path('new_context/', views.newContext),
+    path('reset_context/', views.resetContext)
 ]

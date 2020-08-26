@@ -7,11 +7,9 @@
       <v-stepper-header>
         <template v-for="n in 3">
           <v-stepper-step
-            @click="moveStep"
-            editable
             color="deep-purple accent-2"
             :key="`${n}-step`"
-            :complete="texts[n-1].trim() != ''"
+            :complete="step > n"
             :step="n"
           >
             {{ types[n-1] }}
@@ -31,17 +29,16 @@
           :step="n"
         >
 
-        Please write a sentence that <b>{{condition}} regarding the premise.</b><br><br>
+        Please write a sentence that <b>{{condition}} regarding the premise</b>.<br><br>
         <v-text-field 
           v-model = "texts[n-1]"
           full-width
           outlined
-          clearable
           autofocus
           placeholder = "type your sentence here"/> 
           <!-- Listen to enter to do the same thing. -->
         <v-btn @click="nextStep(n)" color="deep-purple accent-2" dark class="btn_style">
-          {{button_txt}}
+          submit
         </v-btn>
         <span :class="warningMsg != '' ? 'error_txt' : '' ">
           {{warningMsg}}  
@@ -58,27 +55,16 @@
 <script>
 
 export default {
-  name: 'SubInstruction',
+  name: 'Hypothesis',
   data: () => {
     return {
       texts: ['', '', ''],
       types: ['Entailment', 'Neutral', 'Contradiction'],
       step: 1,
-      warningMsg: '',
+      warningMsg: ''
     }
   },
-  props: {
-    classType: String
-  },
   computed: {
-    button_txt: function () {
-      if (this.step <= 2) {
-        return 'Continue'
-      }
-      else {
-        return 'Submit'
-      }
-    },
     condition: function () {
       if (this.step == 1) {
         return 'is definitely true'
@@ -93,40 +79,25 @@ export default {
   },
   methods: {
     nextStep: function (n) {
-      console.log(this.texts)
-      if (n <= 2) {
+
         if (this.texts[n-1].trim() === '') {
-          this.warningMsg = "** You must fill in all the text field above to continue."
+          this.warningMsg = "** You must fill in the text field above to submit."
           setTimeout(() => {
             this.warningMsg = ''
           }, 10000);
           return;
         }
-        else {
+
+        if (n <= 2) {
           this.step++;
+          this.warningMsg = ''
         }
-      }
-      else if (n == 3) {
-        if (this.texts.map(x => x.trim()).includes('')) {
-          this.warningMsg = "** You must fill in all three text fields to submit."
-          setTimeout(() => {
-            this.warningMsg = ''
-          }, 10000);
-          
-          return;
-        }
-        else {
+        else{
           this.$emit('submit-write', this.texts)
           this.texts = ['', '', '']
           this.step = 1
-          // What if I reset the texts earlier?
         }
-      }
-    },
-    moveStep: function () {
-      this.warningMsg = ''
     }
-
   },
   mounted() {
     var self = this;
@@ -142,7 +113,6 @@ export default {
 <style scoped>
 .btn_style {
   float: right;
-  margin-right: 2em;
 }
 
 .error_txt {

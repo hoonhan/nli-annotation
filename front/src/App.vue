@@ -4,7 +4,7 @@
     <v-app-bar app
       color="deep-purple accent-2"
       dark>
-      <v-toolbar-title>Annotation</v-toolbar-title>
+      <v-toolbar-title>Sentence Writing</v-toolbar-title>
       <v-spacer/>
       <div style="margin-right:5%">
         {{msg}}
@@ -21,15 +21,15 @@
     <v-footer app>
     </v-footer>
   </v-app>
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/annotation">About</router-link>
-    </div> -->
   </div>
 </template>
 
 <script>
 export default {
+  name: 'app',
+  created () {
+      document.title = "Writing Sentences";
+  },
   computed: {
     msg: function () {
       var id = this.$store.state.mturk_id;
@@ -45,7 +45,17 @@ export default {
   },
   methods: {
     goBack: function() {
-      this.$router.push('/')
+      // var user_type = this.$store.state.user_type
+      // if (user_type === 0) {
+      //   this.$router.push('/baseline/home')
+      // } 
+      // else if (user_type === 1) {
+      //   this.$router.push('/artificial/home')
+      // }
+      // else if (user_type === 2) {
+      //   this.$router.push('/natural/home')
+      // }
+      this.$router.push('home')
     }
   }
 }
