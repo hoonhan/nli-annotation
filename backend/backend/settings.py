@@ -143,5 +143,6 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8080',
     'http://3.35.47.70:8080',
-    'http://172.31.10.128:8080'
+    'http://172.31.10.128:8080',
+    'http://artifact-mitigation.surge.sh'
 )
