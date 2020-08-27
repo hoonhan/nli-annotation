@@ -137,7 +137,8 @@ export default {
       axios.post(self.$store.state.server_url + "/record_issue/", {
           mturk_id: self.$store.state.mturk_id,
           step: self.step,
-          issue: self.issue
+          issue: self.issue,
+          rules: self.rules
       }).then(function (res) { // eslint-disable-line no-unused-vars
         self.snackbar_msg = 'Thanks! Your issue has been reported!'
         self.snackbar = true

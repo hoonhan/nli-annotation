@@ -93,16 +93,20 @@ def recordIssue(request):
         mturk_id = data['mturk_id']
         step = data['step']
         issue = data['issue']
+        rules = data['rules']
 
         user = User.objects.get(mturk_id=mturk_id)
         premise = Premise.objects.get(id=step).text
         Issue.objects.create(user=user,
                             premise=premise,
-                            text=issue)
+                            text=issue,
+                            rule_ent = rules[0],
+                            rule_neu = rules[1],
+                            rule_con = rules[2])
         return HttpResponse('')
 
 def updateWordCnt(sentence, type):
-    tokenizer = RegexpTokenizer(r'\w+')
+    tokenizer = RegexpTokenizer(r"[\w']+")
     tokens = tokenizer.tokenize(sentence.lower())
     c = Counter(tokens)
 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 # Create your models here.
 class User(models.Model):
     class UserTypes(models.IntegerChoices):
@@ -49,6 +50,9 @@ class Issue(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     premise = models.TextField(max_length=300)
     text = models.TextField(max_length=300)
+    rule_ent = models.CharField(max_length=50, default='')
+    rule_neu = models.CharField(max_length=50, default='')
+    rule_con = models.CharField(max_length=50, default='')
 
 
 class Submit(models.Model):
