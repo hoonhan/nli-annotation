@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 # Create your models here.
 class User(models.Model):
     class UserTypes(models.IntegerChoices):
@@ -13,9 +14,9 @@ class User(models.Model):
     user_type = models.IntegerField(choices=UserTypes.choices, default=0)
     preSurveyDone = models.BooleanField(default=False)
 
-    joinTime = models.TimeField(auto_now_add=True)
-    introEndTime = models.TimeField(default=timezone.now)
-    preEndTime = models.TimeField(default=timezone.now)
+    joinTime = models.DateTimeField(auto_now_add=True)
+    introEndTime = models.DateTimeField(default=timezone.now)
+    preEndTime = models.DateTimeField(default=timezone.now)
 
     def set_type(self, type):
         self.user_type = type
@@ -46,15 +47,52 @@ class Premise(models.Model):
 
 class Issue(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
     premise = models.TextField(max_length=300)
     text = models.TextField(max_length=300)
-    time = models.TimeField(auto_now_add=True)
+    rule_ent = models.CharField(max_length=50, default='')
+    rule_neu = models.CharField(max_length=50, default='')
+    rule_con = models.CharField(max_length=50, default='')
+
 
 class Submit(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
     premise = models.TextField(max_length=300)
     entailment = models.TextField(max_length=300)
     neutral = models.TextField(max_length=300)
     contradiction = models.TextField(max_length=300)
     context = models.TextField(max_length=300, default='')
-    time = models.TimeField(auto_now_add=True)
+    rule_ent = models.CharField(max_length=50, default='')
+    rule_neu = models.CharField(max_length=50, default='')
+    rule_con = models.CharField(max_length=50, default='')
+
+class WordCnt(models.Model):
+    word = models.CharField(max_length=50, default='')
+    alpha = models.IntegerField(default=5)
+    ent_cnt = models.IntegerField(default=0)
+    ent_pmi = models.FloatField(default=0)
+    neu_cnt = models.IntegerField(default=0)
+    neu_pmi = models.FloatField(default=0)
+    con_cnt = models.IntegerField(default=0)
+    con_pmi = models.FloatField(default=0)
+    tot_cnt = models.IntegerField(default=0)
+
+    def update(self, type, cnt):
+        if type == 'ent':
+            self.ent_cnt += cnt
+        elif type == 'neu':
+            self.neu_cnt += cnt
+        elif type == 'con':
+            self.con_cnt += cnt
+        elif type == 'update':
+            pass #Just to update pmi values
+        else:
+            raise Exception("Invalid type when updating word count")
+
+        self.tot_cnt = self.ent_cnt + self.neu_cnt + self.con_cnt
+        self.ent_pmi = (self.ent_cnt + self.alpha) / (self.tot_cnt + 3 * self.alpha)
+        self.neu_pmi = (self.neu_cnt + self.alpha) / (self.tot_cnt + 3 * self.alpha)
+        self.con_pmi = (self.con_cnt + self.alpha) / (self.tot_cnt + 3 * self.alpha)
+
+        self.save()

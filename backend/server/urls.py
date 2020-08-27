@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('get_premise/', views.getPremise),
+    path('get_premise_with_rule/', views.getPremiseWithRule),
     path('check_user/', views.checkUser),
     path('record_intro_done/', views.recordIntroDone),
     path('record_pre_done/', views.recordPreDone),

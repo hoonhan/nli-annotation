@@ -14,7 +14,7 @@
     <h3 style="color:red;"> CAUTIONS </h3>
     <ul>
       <li> <b>One MTurk user can participate in this task only once.</b> </li>
-      <li> This task is expected to take 40 minutes at maximum.</li>
+      <li> This task is expected to take 45 minutes at maximum.</li>
       <li> You will be provided with a token after completing the post-task questionnaire. You <b>MUST</b> submit this token to the Amazon MTurk website to get rewards. </li>
       <li> If majority of your responses are found to not follow the instructions, you may not be rewarded.</li>
       <li> It is strongly recommended that you use <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/chrome/">chrome</a> browser in your desktop/laptop for the task. Other browsers or mobile devices may show unexpected behaviors.</li>
@@ -52,6 +52,7 @@
     <v-btn
       :disabled="!valid"
       @click="onClickNext"
+      dark
       color="deep-purple accent-2"
       class="mr-4"
     >
@@ -85,21 +86,21 @@ export default {
       self.$store.commit('set_mturk_id', self.turk_id.trim())
       self.$helpers.server_call(self, function(self, res){
         if (res.data.user_type != self.$store.state.user_type) {
-          throw new Error('Abnormal access to the webpage detected.')
+          throw new Error('Abnormal access to the webpage detected. You might have joined our website for another task before.')
         }
         if (res.data.predone === false){
-          self.$router.push('introduction')
+          self.$router.push('/artificial/introduction')
         } else if (res.data.step <= 15) {
-          self.$router.push('annotation')
+          self.$router.push('/artificial/annotation')
         } else {
-          self.$router.push('after-done')
+          self.$router.push('/artificial/after-done')
         }
       }, "/check_user")
     }
   },
   mounted() {
     this.turk_id = this.mturk_id
-    this.$store.commit('set_user_type', 0)
+    this.$store.commit('set_user_type', 1)
   }
 }
 </script>

@@ -79,10 +79,10 @@ export default {
     time_now: 0,
     passOneMinute: false,
     items: [
-      {src: require('@/assets/tutorial_b_1.png')},
-      {src: require('@/assets/tutorial_b_2.png')},
-      {src: require('@/assets/tutorial_b_3.png')},
-      {src: require('@/assets/tutorial_b_4.png')},
+      {src: require('@/assets/tutorial_a_1.png')},
+      {src: require('@/assets/tutorial_a_2.png')},
+      {src: require('@/assets/tutorial_a_3.png')},
+      {src: require('@/assets/tutorial_a_4.png')},
       {}
     ]
   }),
