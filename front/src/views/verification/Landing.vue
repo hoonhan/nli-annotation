@@ -85,11 +85,11 @@ export default {
       self.$store.commit('set_mturk_id', self.turk_id.trim())
       self.$helpers.server_call(self, function(self, res){
         if (res.data.predone === false){
-          self.$router.push('/baseline/introduction')
+          self.$router.push('/verification/introduction')
         } else if (res.data.step <= 15) {
-          self.$router.push('/baseline/annotation')
+          self.$router.push('/verification/annotation')
         } else {
-          self.$router.push('/baseline/after-done')
+          self.$router.push('/verification/after-done')
         }
       }, "/check_user")
     }

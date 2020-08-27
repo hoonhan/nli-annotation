@@ -88,11 +88,11 @@ export default {
           throw new Error('Abnormal access to the webpage detected.')
         }
         if (res.data.predone === false){
-          self.$router.push('introduction')
+          self.$router.push('/natural/introduction')
         } else if (res.data.step <= 15) {
-          self.$router.push('annotation')
+          self.$router.push('/natural/annotation')
         } else {
-          self.$router.push('after-done')
+          self.$router.push('/natural/after-done')
         }
       }, "/check_user")
     }
