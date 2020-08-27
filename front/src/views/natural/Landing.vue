@@ -99,7 +99,7 @@ export default {
   },
   mounted() {
     this.turk_id = this.mturk_id
-    this.$store.commit('set_user_type', 0)
+    this.$store.commit('set_user_type', 2)
   }
 }
 </script>

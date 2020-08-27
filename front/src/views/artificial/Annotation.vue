@@ -2,7 +2,7 @@
   <v-container fill-height>
     <v-row align="stretch">
       <v-col cols="5" class="instr_box">
-        <instruction-panel/>
+        <instruction-panel-artificial/>
       </v-col>
       <v-col cols="7" class="bounding_box">
         <v-row><v-col>
@@ -13,7 +13,7 @@
             color="deep-purple accent-2"/>
           <br><v-divider/><br>
           <premise :premise_txt="premise"/>
-          <hypothesis @submit-write="onSubmitWrite"/>
+          <hypothesis-artificial @submit-write="onSubmitWrite"/>
           </v-col>
         </v-row>
         <v-row justify="end">
@@ -60,16 +60,16 @@
 <script>
 // @ is an alias to /src
 import Premise from '@/components/Premise.vue'
-import Hypothesis from '@/components/Hypothesis.vue'
-import InstructionPanel from '@/components/InstructionPanel.vue'
+import HypothesisArtificial from '@/components/HypothesisArtificial.vue'
+import InstructionPanelArtificial from '@/components/InstructionPanelArtificial.vue'
 import axios from 'axios'
 
 export default {
   name: 'Annotation',
   components: {
     Premise,
-    Hypothesis,
-    InstructionPanel
+    HypothesisArtificial,
+    InstructionPanelArtificial
   },
   data: () => ({
     step: 1,
