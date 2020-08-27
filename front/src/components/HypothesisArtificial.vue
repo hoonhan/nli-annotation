@@ -29,7 +29,7 @@
           :step="n"
         >
 
-        Please write a sentence that <b>{{condition}} regarding the premise</b>.<br><br>
+        Please write a sentence that <b>{{condition}} regarding the premise</b> including the word <span class="redbold">{{rules[n-1]}}</span>.<br><br>
         <v-text-field 
           v-model = "texts[n-1]"
           full-width
@@ -40,9 +40,8 @@
         <v-btn @click="nextStep(n)" color="deep-purple accent-2" dark class="btn_style">
           submit
         </v-btn>
-        <span :class="warningMsg != '' ? 'error_txt' : '' ">
-          {{warningMsg}}  
-        </span>
+        <span :class="warningMsg != '' ? 'error_txt' : '' " v-html="warningMsg">
+        </span>       
 
         </v-stepper-content>
       </v-stepper-items>
@@ -64,6 +63,9 @@ export default {
       warningMsg: ''
     }
   },
+  props: [
+    'rules'
+  ],
   computed: {
     condition: function () {
       if (this.step == 1) {
@@ -81,7 +83,14 @@ export default {
     nextStep: function (n) {
 
         if (this.texts[n-1].trim() === '') {
-          this.warningMsg = "** You must fill in the text field above to submit."
+          this.warningMsg = "<span style='color: red;'>** You must fill in the text field above to submit.</span>"
+          setTimeout(() => {
+            this.warningMsg = ''
+          }, 10000);
+          return;
+        }
+        if (!this.texts[n-1].includes(this.rules[n-1])) {
+          this.warningMsg = '** You must exactly include the word <span style="color:red; font-weight:bold;">' + this.rules[n-1] + '</span> in the sentence.'
           setTimeout(() => {
             this.warningMsg = ''
           }, 10000);
@@ -116,11 +125,14 @@ export default {
 }
 
 .error_txt {
-  color: red;
-
   position: relative;
   animation: shake .1s linear;
   animation-iteration-count: 3;
+}
+
+.redbold {
+  color: red;
+  font-weight: bold;
 }
 @keyframes shake {
     0% { left: -5px; }

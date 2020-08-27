@@ -3,14 +3,17 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.db import transaction
 from rest_framework.decorators import api_view
 
 from scipy import spatial
 import json, pickle, random
 import nltk
-from nltk.tokenize import word_tokenize 
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import RegexpTokenizer
+from collections import Counter
 
-from .models import Premise, User, Issue, Submit
+from .models import Premise, User, Issue, Submit, WordCnt
 
 @csrf_exempt
 def checkUser(request):
@@ -58,6 +61,31 @@ def getPremise(request):
         }
         return JsonResponse(response)
 
+def getRule():
+    wordcnt = WordCnt.objects.filter(tot_cnt__gte = 10).values_list('word', 'ent_pmi', 'neu_pmi', 'con_pmi')
+    ent_rule = wordcnt.order_by('ent_pmi').first()[0]
+    neu_rule = wordcnt.order_by('neu_pmi').first()[0]
+    con_rule = wordcnt.order_by('con_pmi').first()[0]
+    return [ent_rule, neu_rule, con_rule]
+
+@csrf_exempt
+def getPremiseWithRule(request):
+    if request.method == 'GET':
+        mturk_id = request.GET['mturk_id']
+        user = User.objects.get(mturk_id=mturk_id)
+        # context_step = 0으로 
+
+        response = {
+            'predone': user.preSurveyDone,
+            'step': user.step,
+            'premise': Premise.objects.get(id=user.step).text,
+            'rule': getRule()
+        }
+    return JsonResponse(response)
+
+
+
+
 @csrf_exempt
 def recordIssue(request):
     if request.method == 'POST':
@@ -73,6 +101,14 @@ def recordIssue(request):
                             text=issue)
         return HttpResponse('')
 
+def updateWordCnt(sentence, type):
+    tokenizer = RegexpTokenizer(r'\w+')
+    tokens = tokenizer.tokenize(sentence.lower())
+    c = Counter(tokens)
+
+    for word, cnt in c.items():
+        wordcnt, created = WordCnt.objects.get_or_create(word=word)
+        wordcnt.update(type, cnt)
 
 @csrf_exempt
 def recordSubmit(request):
@@ -83,17 +119,32 @@ def recordSubmit(request):
         entailment = data['entailment']
         neutral = data['neutral']
         contradiction = data['contradiction']
+        rule_word = data.get('rules', ['', '', ''])
 
         user = User.objects.get(mturk_id=mturk_id)
         now_premise = Premise.objects.get(id=step).text
         next_premise = Premise.objects.get(id=step+1).text
         user.step_up()
+
+        with transaction.atomic():
+            updateWordCnt(entailment, 'ent')
+            updateWordCnt(neutral, 'neu')
+            updateWordCnt(contradiction, 'con')
+
         Submit.objects.create(user=user,
                             premise=now_premise,
                             entailment=entailment,
                             neutral=neutral,
-                            contradiction=contradiction)
-        return HttpResponse(next_premise)
+                            contradiction=contradiction,
+                            rule_ent = rule_word[0],
+                            rule_neu = rule_word[1],
+                            rule_con = rule_word[2])
+    
+        response = {
+            'premise': next_premise,
+            'rule': getRule()
+        }
+        return JsonResponse(response)
 
 def extract_keywords(sentence, stop_words):
     sentence_without_stopwords = list(filter(lambda x: x not in stop_words, word_tokenize(sentence)))

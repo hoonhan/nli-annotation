@@ -13,7 +13,7 @@
             color="deep-purple accent-2"/>
           <br><v-divider/><br>
           <premise :premise_txt="premise"/>
-          <hypothesis-artificial @submit-write="onSubmitWrite"/>
+          <hypothesis-artificial @submit-write="onSubmitWrite" :rules="rules"/>
           </v-col>
         </v-row>
         <v-row justify="end">
@@ -77,12 +77,13 @@ export default {
     snackbar: false,
     snackbar_msg: 'Your response has been recorded!',
     dialog: false,
-    issue: ''
+    issue: '',
+    rules: []
   }),
   methods: {
     loadPremise: function () {
       const self = this;
-      axios.get(self.$store.state.server_url + "/get_premise", {
+      axios.get(self.$store.state.server_url + "/get_premise_with_rule", {
         params: {
           mturk_id: self.$store.state.mturk_id
         }
@@ -95,10 +96,11 @@ export default {
           alert('You already finished the task!\n');
           self.$router.push('after-done')
         }
+        self.rules = res.data.rule
         self.step = res.data.step
         self.premise = res.data.premise
       }).catch(function(err) {
-        alert('Please refresh this page.\n' + err);
+        alert('Please refresh this page.\nIf this error repeats, you should go back home as your id is not valid.\n' + err);
       });
     },
     onSubmitWrite: function (texts) {
@@ -113,7 +115,8 @@ export default {
           step: self.step,
           entailment: entailment,
           neutral: neutral,
-          contradiction: contradiction
+          contradiction: contradiction,
+          rules: self.rules
       }).then(function (res) {
         self.snackbar_msg = 'Your response has been recorded!'
         self.snackbar = true
@@ -121,7 +124,8 @@ export default {
           self.$router.push('after-done')
         } else {
           self.step += 1
-          self.premise = res.data
+          self.rules = res.data.rule
+          self.premise = res.data.premise
         }
       }).catch(function(err) {
         alert(err);
@@ -147,6 +151,9 @@ export default {
  beforeMount(){
     this.$helpers.isWrongAccess(this)
     this.loadPremise()
+    if (this.$store.state.user_type != 1) {
+      alert("Abnormal access detected.")
+    }
  },
 }
 </script>

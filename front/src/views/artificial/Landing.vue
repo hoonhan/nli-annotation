@@ -86,7 +86,7 @@ export default {
       self.$store.commit('set_mturk_id', self.turk_id.trim())
       self.$helpers.server_call(self, function(self, res){
         if (res.data.user_type != self.$store.state.user_type) {
-          throw new Error('Abnormal access to the webpage detected.')
+          throw new Error('Abnormal access to the webpage detected. You might have joined our website for another task before.')
         }
         if (res.data.predone === false){
           self.$router.push('/artificial/introduction')
