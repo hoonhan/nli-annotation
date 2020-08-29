@@ -18,7 +18,7 @@ export default {
   }),
   computed: {
     form_url: function () {
-      return "hhttps://docs.google.com/forms/d/e/1FAIpQLScukv8jepfj9-mderry0RGQ7HBGC2_vv6NT1FZlf7PrP7Z3zw/viewform?embedded=true&entry.628211538=" + this.$store.state.mturk_id
+      return "https://docs.google.com/forms/d/e/1FAIpQLScukv8jepfj9-mderry0RGQ7HBGC2_vv6NT1FZlf7PrP7Z3zw/viewform?embedded=true&entry.628211538=" + this.$store.state.mturk_id
     }
   },
   methods: {
