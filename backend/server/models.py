@@ -96,3 +96,46 @@ class WordCnt(models.Model):
         self.con_pmi = (self.con_cnt + self.alpha) / (self.tot_cnt + 3 * self.alpha)
 
         self.save()
+
+
+#####################################################
+
+class VUser(models.Model):
+    mturk_id = models.TextField()
+    step = models.IntegerField(default=1)
+    isQuit = models.BooleanField(default=False)
+
+    joinTime = models.DateTimeField(auto_now_add=True)
+    quitTime = models.DateTimeField(default=timezone.now)
+
+    def step_up(self):        
+        self.step += 1
+        self.save()
+    
+    def quit(self):
+        self.isQuit = True
+        self.quitTime = timezone.now()
+        self.save()
+
+class VPair(models.Model):
+    premise = models.TextField(default='')
+    hypothesis = models.TextField(default='')
+    answer = models.TextField(default='')
+    count = models.IntegerField(default=0)
+
+    def submit(self):
+        self.count += 1
+        self.save()
+
+class VSubmit(models.Model):
+    class Types(models.IntegerChoices):
+        ERROR = 0
+        ENTAILMENT = 1
+        NEUTRAL = 2
+        CONTRADICTION = 3
+        NA = 4
+        
+    user = models.ForeignKey('VUser', on_delete=models.CASCADE)
+    pair = models.ForeignKey('VPair', on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    label = models.IntegerField(choices=Types.choices, default=0)

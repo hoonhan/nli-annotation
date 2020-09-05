@@ -12,8 +12,10 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.tokenize import RegexpTokenizer
 from collections import Counter
+import random
 
 from .models import Premise, User, Issue, Submit, WordCnt
+from .models import VUser, VSubmit, VPair
 
 @csrf_exempt
 def checkUser(request):
@@ -204,3 +206,88 @@ def newContext(request):
             'contexts': similar_words[995-50*(ctxt_step-1):1000-50*(ctxt_step-1)]
         }
         return JsonResponse(response) 
+
+
+
+#########################################################
+@csrf_exempt
+def checkUserVal(request):
+    mturk_id = request.GET['mturk_id']
+
+    if request.method == 'GET':
+        user, created = VUser.objects.get_or_create(mturk_id=mturk_id)
+
+        response = {
+            'step': user.step,
+            'is_quit': user.isQuit
+        }
+        return JsonResponse(response)
+
+@csrf_exempt
+def getPairVal(request):
+    mturk_id = request.GET['mturk_id']
+
+    if request.method == 'GET':
+        user = VUser.objects.get(mturk_id=mturk_id)
+        seen_pairs = list(set(VSubmit.objects.filter(user=user).values_list('pair_id', flat=True)))
+        gold_pairs = {
+            2: 1516,
+            5: 1517,
+            10: 1518,
+            20: 1519,
+            30: 1520
+        }
+        if user.step in gold_pairs.keys():
+            pair = VPair.objects.get(id=gold_pairs[user.step])
+        else:
+            possible_ids = list(VPair.objects.exclude(id__in=seen_pairs+list(gold_pairs.keys())).filter(count__lt=4).values_list('id', flat=True))
+            if possible_ids == []:
+                response = {
+                    'is_quit': True
+                }
+                return JsonResponse(response)
+            
+            pk = random.choice(possible_ids)
+            pair = VPair.objects.get(id=pk)
+        response = {
+            'step': user.step,
+            'pair_id': pair.id,
+            'premise': pair.premise,
+            'hypothesis': pair.hypothesis,
+            'is_quit': user.isQuit
+        }
+        return JsonResponse(response)
+
+@csrf_exempt
+def submitVal(request): 
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        mturk_id = data['mturk_id']
+        step = data['step']
+        pair_id = data['pair_id']
+        label = data['label']
+
+        user = VUser.objects.get(mturk_id=mturk_id)
+        user.step_up()
+
+        pair = VPair.objects.get(id=pair_id)
+        pair.submit()
+
+        VSubmit.objects.create(user=user,
+                            pair=pair,
+                            label=label)
+
+        response = {
+            'step': user.step
+        }
+        return JsonResponse(response)
+
+@csrf_exempt
+def quitVal(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        mturk_id = data['mturk_id']
+        user = VUser.objects.get(mturk_id=mturk_id)
+        user.quit()
+
+        return JsonResponse({})
