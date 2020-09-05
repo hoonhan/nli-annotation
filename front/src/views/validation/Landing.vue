@@ -67,7 +67,7 @@
 import { mapState } from "vuex";
 
 export default {
-  name: 'Landing',
+  name: 'VLanding',
   data: () => ({
     valid: true,
     turk_id: '',
@@ -84,18 +84,22 @@ export default {
       self.$refs.form.validate()
       self.$store.commit('set_mturk_id', self.turk_id.trim())
       self.$helpers.server_call(self, function(self, res){
+        if (res.data.user_type != self.$store.state.user_type) {
+          throw new Error('Abnormal access to the webpage detected.')
+        }
         if (res.data.predone === false){
-          self.$router.push('/verification/introduction')
+          self.$router.push('/baseline/introduction')
         } else if (res.data.step <= 15) {
-          self.$router.push('/verification/annotation')
+          self.$router.push('/baseline/annotation')
         } else {
-          self.$router.push('/verification/after-done')
+          self.$router.push('/baseline/after-done')
         }
       }, "/check_user")
     }
   },
   mounted() {
     this.turk_id = this.mturk_id
+    this.$store.commit('set_user_type', 0)
   }
 }
 </script>

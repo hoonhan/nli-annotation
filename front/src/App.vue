@@ -33,7 +33,7 @@ export default {
   computed: {
     msg: function () {
       var id = this.$store.state.mturk_id;
-      if (this.$route.name === 'Landing') {
+      if (this.$route.name.includes('Landing')) {
         return 'Welcome!'
       } else if (id === null) {
         return 'Your ID is not registered!!! ___ GO BACK HOME to register your ID'

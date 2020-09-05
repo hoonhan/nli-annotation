@@ -18,6 +18,12 @@ import PreSurvey2 from '../views/natural/PreSurvey.vue'
 import Annotation2 from '../views/natural/Annotation.vue'
 import AfterDone2 from '../views/natural/AfterDone.vue'
 
+import VLanding from '../views/validation/Landing.vue'
+import VIntroduction from '../views/validation/Introduction.vue'
+import VGoldTask from '../views/validation/GoldTask.vue'
+import VAnnotation from '../views/validation/Annotation.vue'
+import VAfterDone from '../views/validation/AfterDone.vue'
+
 Vue.use(VueRouter)
 
   const routes = [
@@ -98,6 +104,32 @@ Vue.use(VueRouter)
     path: '/natural/after-done',
     name: 'AfterDone2',
     component: AfterDone2
+  },
+  {
+    path: '/validation/home',
+    name: 'VLanding',
+    component: VLanding,
+    alias: '/validation'
+  },
+  {
+    path: '/validation/introduction',
+    name: 'VIntroduction',
+    component: VIntroduction
+  },
+  {
+    path: '/validation/gold-task',
+    name: 'VGoldTask',
+    component: VGoldTask
+  },
+  {
+    path: '/natural/annotation',
+    name: 'VAnnotation',
+    component: VAnnotation
+  },
+  {
+    path: '/validation/after-done',
+    name: 'VAfterDone',
+    component: VAfterDone
   }
 ]
 
