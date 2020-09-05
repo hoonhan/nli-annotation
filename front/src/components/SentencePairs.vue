@@ -1,21 +1,34 @@
 <template>
+<div>
   <v-row>
   <v-col>
     <h3> Premise: </h3>
     <v-card 
       color="orange lighten-4"
       class="premise_text">
-      {{ premise_txt }}
+      {{ premise }}
     </v-card>
   </v-col>
   </v-row>
+  <v-row>
+  <v-col>
+    <h3> Hypothesis: </h3>
+    <v-card 
+      color="orange lighten-4"
+      class="premise_text">
+      {{ hypothesis }}
+    </v-card>
+  </v-col>
+  </v-row>
+</div>
 </template>
 
 <script>
 export default {
-  name: 'Premise',
+  name: 'SentencePairs',
   props: {
-    premise_txt: String
+    premise: String,
+    hypothesis: String
   }
 }
 </script>

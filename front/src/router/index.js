@@ -110,7 +110,7 @@ Vue.use(VueRouter)
     alias: '/validation'
   },
   {
-    path: '/natural/annotation',
+    path: '/validation/annotation',
     name: 'VAnnotation',
     component: VAnnotation
   },

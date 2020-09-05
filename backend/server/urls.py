@@ -10,5 +10,10 @@ urlpatterns = [
     path('record_submit/', views.recordSubmit),
     path('record_issue/', views.recordIssue),
     path('new_context/', views.newContext),
-    path('reset_context/', views.resetContext)
+    path('reset_context/', views.resetContext),
+
+    path('check_user_val/', views.checkUserVal),
+    path('get_pair_val/', views.getPairVal),
+    path('submit_val/', views.submitVal),
+    path('quit_val/', views.quitVal)
 ]

@@ -12,13 +12,14 @@
 
     <h3 style="color:red;"> NOTES </h3>
     <ul>
+      <li> You should label <b>20</b> pairs at least to get rewards. Otherwise, you will not be rewarded.</li>
       <li> You can label a pair of sentences as much as you want.</li>
+      <li> <span class="red_bold"> It might take a week for you to get additional reward than $1. </span></li>
       <li> Some of the sentence pairs have correct answers. If you respond incorrectly to the majority of them, you may not be rewarded.</li>
-      <li> The final reward will be $0.1 * (# of responses). For example, if you label 100 sentences, you will be paid $10.</li>
+      <li> The final reward will be $0.05 * (# of responses). For example, if you label 100 sentences, you will be paid $5.</li>
       <li> If you want to quit the task, you should click the button "I am done!" at the bottom of the page.<br>
       We will give you a token which you <b>MUST</b> submit to the Amazon MTurk website to get rewards. </li>
       <li> Once you quit the task, you cannot join this task anymore. </li>
-      
       <li> It is strongly recommended that you use <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/chrome/">chrome</a> browser in your desktop/laptop for the task. Other browsers or mobile devices may show unexpected behaviors.</li>
     </ul>
     
@@ -80,22 +81,16 @@ export default {
       self.$refs.form.validate()
       self.$store.commit('set_mturk_id', self.turk_id.trim())
       self.$helpers.server_call(self, function(self, res){
-        if (res.data.user_type != self.$store.state.user_type) {
-          throw new Error('Abnormal access to the webpage detected.')
-        }
-        if (res.data.predone === false){
-          self.$router.push('/validation/introduction')
-        } else if (res.data.step <= 15) {
-          self.$router.push('/validation/annotation')
-        } else {
+        if (res.data.is_quit === true){
           self.$router.push('/validation/after-done')
-        }
-      }, "/check_user")
+        } else {
+          self.$router.push('/validation/annotation')
+        } 
+      }, "/check_user_val")
     }
   },
   mounted() {
     this.turk_id = this.mturk_id
-    this.$store.commit('set_user_type', 3)
   }
 }
 </script>
@@ -103,5 +98,10 @@ export default {
 <style scoped>
 .up_margin {
   margin-top:2rem;
+}
+
+.red_bold {
+  color:red;
+  font-weight: bold;
 }
 </style>
