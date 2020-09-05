@@ -14,7 +14,7 @@
     <ul>
       <li> You should label <b>20</b> pairs at least to get rewards. Otherwise, you will not be rewarded.</li>
       <li> You can label a pair of sentences as much as you want.</li>
-      <li> <span class="red_bold"> It might take a week for you to get additional reward than $1. </span></li>
+      <li> <span class="red_bold"> It might take a week for you to get additional reward than $1</span> in MTurk system. </li>
       <li> Some of the sentence pairs have correct answers. If you respond incorrectly to the majority of them, you may not be rewarded.</li>
       <li> The final reward will be $0.05 * (# of responses). For example, if you label 100 sentences, you will be paid $5.</li>
       <li> If you want to quit the task, you should click the button "I am done!" at the bottom of the page.<br>
