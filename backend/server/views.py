@@ -240,7 +240,7 @@ def getPairVal(request):
         if user.step in gold_pairs.keys():
             pair = VPair.objects.get(id=gold_pairs[user.step])
         else:
-            possible_ids = list(VPair.objects.exclude(id__in=seen_pairs+list(gold_pairs.keys())).filter(count__lt=4).values_list('id', flat=True))
+            possible_ids = list(VPair.objects.exclude(id__in=seen_pairs+list(gold_pairs.values())).filter(count__lt=4).values_list('id', flat=True))
             if possible_ids == []:
                 response = {
                     'is_quit': True
