@@ -96,7 +96,7 @@ export default {
           }, 10000);
           return;
         }
-        if (this.text.toLowerCase().split(' ').indexOf(this.cword) < 0) {
+        if (this.text.toLowerCase().replace(/\./g, '').split(' ').indexOf(this.cword) < 0) {
           this.warningMsg = '** You must exactly include the word <span style="color:red; font-weight:bold;">' + this.cword + '</span> in the sentence.'
           setTimeout(() => {
             this.warningMsg = ''
@@ -106,8 +106,6 @@ export default {
 
 
         this.$emit('submit-write', this.text, n-1)
-
-        // this.step = next_val[this.step];
         this.text = ''
         this.warningMsg = ''
         

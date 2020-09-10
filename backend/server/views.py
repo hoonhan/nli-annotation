@@ -15,7 +15,7 @@ from collections import Counter
 import random
 
 from .models import Premise, User, Issue, Submit, WordCnt
-from .models import VUser, VSubmit, VPair, CSubmit, CIssue
+from .models import VUser, VSubmit, VPair, CSubmit, CIssue 
 
 @csrf_exempt
 def checkUser(request):
