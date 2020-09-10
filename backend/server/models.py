@@ -10,6 +10,7 @@ class User(models.Model):
         NATURAL = 2
     mturk_id = models.TextField()
     step = models.IntegerField(default=1)
+    ctype = models.IntegerField(default=0)
     context_step = models.IntegerField(default=1)
     user_type = models.IntegerField(choices=UserTypes.choices, default=0)
     preSurveyDone = models.BooleanField(default=False)
@@ -33,6 +34,10 @@ class User(models.Model):
         self.context_step = 1
         self.save()
 
+    def set_ctype(self, ctype):
+        self.ctype = ctype
+        self.save()
+
     def introEnd(self):
         self.introEndTime = timezone.now()
         self.save()
@@ -45,7 +50,7 @@ class User(models.Model):
 class Premise(models.Model):
     text = models.TextField()
 
-class Issue(models.Model):
+class Issue(models.Model): 
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     premise = models.TextField(max_length=300)
@@ -139,3 +144,26 @@ class VSubmit(models.Model):
     pair = models.ForeignKey('VPair', on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     label = models.IntegerField(choices=Types.choices, default=0)
+
+#####################################################
+
+
+class CIssue(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    premise = models.TextField(max_length=300, default='')
+    ctype = models.IntegerField(default=0)
+    text = models.TextField(max_length=300)
+    cwords = models.TextField(max_length=300, default='')
+    cword = models.CharField(max_length=50, default='')
+
+
+class CSubmit(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    premise = models.TextField(max_length=300)
+    ctype = models.IntegerField(default=0)
+    text = models.TextField(max_length=300)
+    cwords = models.TextField(max_length=300, default='')
+    cword = models.CharField(max_length=50, default='')
+

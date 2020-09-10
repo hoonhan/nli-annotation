@@ -3,13 +3,13 @@
   <v-row>
   <v-col>
     <v-stepper
-      v-model="step">
+      v-model="type">
       <v-stepper-header>
         <template v-for="n in 3">
           <v-stepper-step
             color="deep-purple accent-2"
             :key="`${n}-step`"
-            :complete="step > n"
+            :complete="type > n"
             :step="n"
           >
             {{ types[n-1] }}
@@ -29,13 +29,20 @@
           :step="n"
         >
 
-        Please write a sentence that <b>{{condition}} regarding the premise</b> including the word <span class="redbold">{{rules[n-1]}}</span>.<br><br>
+        <span v-if="cword===''">
+          Please choose a word first from the panel above.
+        </span>
+        <span v-else>
+          Please write a sentence that <b>{{condition[n]}} regarding the premise</b> including the word <span class="redbold">{{cword}}</span>.
+        </span>
+        <br><br>
         <v-text-field 
-          v-model = "texts[n-1]"
+          v-model = "text"
           full-width
           outlined
           autofocus
-          placeholder = "type your sentence here"/> 
+          :placeholder="placeholder"
+          :disabled="cword===''"/> 
           <!-- Listen to enter to do the same thing. -->
         <v-btn @click="nextStep(n)" color="deep-purple accent-2" dark class="btn_style">
           submit
@@ -57,62 +64,68 @@ export default {
   name: 'HypothesisArtificial',
   data: () => {
     return {
-      texts: ['', '', ''],
+      text: '',
       types: ['Entailment', 'Neutral', 'Contradiction'],
-      step: 1,
-      warningMsg: ''
+      warningMsg: '',
+      condition: {
+        1: 'is definitely true',
+        2: 'might be true',
+        3: 'is definitely false'
+      },
     }
   },
   props: [
-    'rules'
+    'cword',
+    'loading',
+    'type'
   ],
-  computed: {
-    condition: function () {
-      if (this.step == 1) {
-        return 'is definitely true'
-      }
-      else if (this.step == 2) {
-        return 'might be true'
-      }
-      else {
-        return 'is definitely false'
-      }
-    }
-  },
   methods: {
     nextStep: function (n) {
 
-        if (this.texts[n-1].trim() === '') {
+        if (this.cword === '') {
+          this.warningMsg = "<span style='color: red;'>** You must choose a word among the five words provided above.</span>"
+          setTimeout(() => {
+            this.warningMsg = ''
+          }, 10000);
+          return;
+        }
+        if (this.text.trim() === '') {
           this.warningMsg = "<span style='color: red;'>** You must fill in the text field above to submit.</span>"
           setTimeout(() => {
             this.warningMsg = ''
           }, 10000);
           return;
         }
-        if (!this.texts[n-1].includes(this.rules[n-1])) {
-          this.warningMsg = '** You must exactly include the word <span style="color:red; font-weight:bold;">' + this.rules[n-1] + '</span> in the sentence.'
+        if (this.text.toLowerCase().split(' ').indexOf(this.cword) < 0) {
+          this.warningMsg = '** You must exactly include the word <span style="color:red; font-weight:bold;">' + this.cword + '</span> in the sentence.'
           setTimeout(() => {
             this.warningMsg = ''
           }, 10000);
           return;
         }
 
-        if (n <= 2) {
-          this.step++;
-          this.warningMsg = ''
-        }
-        else{
-          this.$emit('submit-write', this.texts)
-          this.texts = ['', '', '']
-          this.step = 1
-        }
+
+        this.$emit('submit-write', this.text, n-1)
+
+        // this.step = next_val[this.step];
+        this.text = ''
+        this.warningMsg = ''
+        
+    }
+  },
+  computed: {
+    placeholder: function() {
+      if (this.cword === '') {
+        return 'CHOOSE A WORD FIRST'
+      }
+      return 'type your sentence here'
     }
   },
   mounted() {
     var self = this;
     window.addEventListener('keyup', function(event) {
       if (event.keyCode === 13) { 
-        self.nextStep(self.step)
+        self.nextStep(self.type)
       }
     });
   }

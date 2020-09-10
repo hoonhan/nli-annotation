@@ -13,7 +13,8 @@
             color="deep-purple accent-2"/>
           <br><v-divider/><br>
           <premise :premise_txt="premise"/>
-          <hypothesis-artificial @submit-write="onSubmitWrite" :rules="rules"/>
+          <multiple-constraint @click-chip="onClickWord" :cwords="cwords"/>
+          <hypothesis-artificial @submit-write="onSubmitWrite" :type="type+1" :cword="cword"/>
           </v-col>
         </v-row>
         <v-row justify="end">
@@ -62,6 +63,7 @@
 import Premise from '@/components/Premise.vue'
 import HypothesisArtificial from '@/components/HypothesisArtificial.vue'
 import InstructionPanelArtificial from '@/components/InstructionPanelArtificial.vue'
+import MultipleConstraint from '@/components/MultipleConstraint.vue'
 import axios from 'axios'
 
 export default {
@@ -69,21 +71,24 @@ export default {
   components: {
     Premise,
     HypothesisArtificial,
-    InstructionPanelArtificial
+    InstructionPanelArtificial,
+    MultipleConstraint
   },
   data: () => ({
     step: 1,
+    type: 0,
     premise: '',
     snackbar: false,
     snackbar_msg: 'Your response has been recorded!',
     dialog: false,
     issue: '',
-    rules: []
+    cwords: [''],
+    cword: ''
   }),
   methods: {
-    loadPremise: function () {
+    loadPremise: function (first=false) {
       const self = this;
-      axios.get(self.$store.state.server_url + "/get_premise_with_rule", {
+      axios.get(self.$store.state.server_url + "/get_premise", {
         params: {
           mturk_id: self.$store.state.mturk_id
         }
@@ -96,50 +101,72 @@ export default {
           alert('You already finished the task!\n');
           self.$router.push('after-done')
         }
-        self.rules = res.data.rule
         self.step = res.data.step
         self.premise = res.data.premise
+        if (first) {
+          self.loadNewCWord(res.data.type)
+        }
       }).catch(function(err) {
         alert('Please refresh this page.\nIf this error repeats, you should go back home as your id is not valid.\n' + err);
       });
     },
-    onSubmitWrite: function (texts) {
+    onSubmitWrite: function (text, type) {
       const self = this;
-
-      var entailment = texts[0];
-      var neutral = texts[1];
-      var contradiction = texts[2];
-
-      axios.post(self.$store.state.server_url + "/record_submit/", {
+      axios.post(self.$store.state.server_url + "/record_submit_cword/", {
           mturk_id: self.$store.state.mturk_id,
           step: self.step,
-          entailment: entailment,
-          neutral: neutral,
-          contradiction: contradiction,
-          rules: self.rules
-      }).then(function (res) {
+          response: text,
+          type: type,
+          cwords: self.cwords.join('_'),
+          cword: self.cword
+      }).then(function () {
         self.snackbar_msg = 'Your response has been recorded!'
         self.snackbar = true
-        if (self.step == 15) {
-          self.$router.push('after-done')
+        if (type <= 1) {
+          self.loadNewCWord(type+1)
+        } else if (type === 2 && self.step != 15) {
+          self.loadNewCWord(0, true)
         } else {
-          self.step += 1
-          self.rules = res.data.rule
-          self.premise = res.data.premise
+          self.$router.push('after-done')
         }
+        return 'done'
       }).catch(function(err) {
         alert(err);
       });
     },
+
+    loadNewCWord(type, last=false) {
+      const self = this;
+      self.cwords = []
+      console.log(type, self.type, self.step)
+      axios.get(self.$store.state.server_url + "/get_cword/", {
+        params: {
+          mturk_id: self.$store.state.mturk_id,
+          type: type
+        }
+      }).then(function (res) {
+        self.type = type
+        self.cwords = res.data.cwords
+        self.cword = ''
+        if (last) {
+          self.loadPremise()
+        }
+      }).catch(function(err) {
+        alert(err);
+      });      
+    },
+
     onSubmitIssue: function () {
       const self = this;
 
-      axios.post(self.$store.state.server_url + "/record_issue/", {
+      axios.post(self.$store.state.server_url + "/record_issue_cword/", {
           mturk_id: self.$store.state.mturk_id,
           step: self.step,
+          type: self.type,
           issue: self.issue,
-          rules: self.rules
-      }).then(function (res) { // eslint-disable-line no-unused-vars
+          cwords: self.cwords.join('_'),
+          cword: self.cword
+      }).then(function () { 
         self.snackbar_msg = 'Thanks! Your issue has been reported!'
         self.snackbar = true
         self.dialog = false
@@ -147,11 +174,19 @@ export default {
       }).catch(function(err) {
         alert("Sorry but could you submit it again?\n" + err);
       });      
+    },
+
+    onClickWord: function (word) {
+      const self = this;
+      self.cword = word;
     }
+
   },
  beforeMount(){
     this.$helpers.isWrongAccess(this)
-    this.loadPremise()
+    this.loadPremise(true)
+    
+    console.log(this.$store.state.user_type)
     if (this.$store.state.user_type != 1) {
       alert("Abnormal access detected.")
     }

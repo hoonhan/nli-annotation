@@ -1,8 +1,8 @@
 <template>
 <div>
   <h1> Instruction </h1>
-  Given a sentence(so-called premise), you should write a sentence that matches a specific class type. Additionally, you must use the given <span class="redbold">word</span> when writing sentences.
-  In total, you should write three sentences for the same premise, one for each of the following class types.<br><br>
+  Given a sentence (so-called premise), you should write a sentence that matches a specific class type. When writing, you should select a <span class="redbold">word</span> among the given five words and include it in the sentence.
+  In total, you should write three sentences for a premise, one for each of the following class type. <br><br>
 
   <ul>
   <li> <v-chip color="primary" class="ma-2" label>entailment</v-chip> : Write a sentence that is <b>definitely true</b> regarding the premise.</li>
@@ -12,10 +12,10 @@
 
   <h3> Notes </h3>
   <ul>
-  <li> Premises are a caption of one photo. </li>
+  <li> A premise is a caption of a photo. </li>
   <li> When writing sentences, you can use what you know about the world. </li>
   <li> Your sentences should <b>NOT</b> sound absurd regarding the premise.</li>
-  <li> You should use exaclty the given word. For example, you cannot useㅤ<span class="amplf">arbitrary</span>ㅤin your sentence whenㅤ<span class="amplf">arbitrarily</span>ㅤis given.</li>
+  <li> You should exactly include the word you selected. For example, you cannot useㅤ<span class="amplf">arbitrary</span>ㅤin your sentence whenㅤyou select the word <span class="amplf">arbitrarily</span>.</li>
   </ul><br> 
 
   <h3> Examples </h3>

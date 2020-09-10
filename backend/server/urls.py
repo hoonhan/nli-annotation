@@ -15,5 +15,9 @@ urlpatterns = [
     path('check_user_val/', views.checkUserVal),
     path('get_pair_val/', views.getPairVal),
     path('submit_val/', views.submitVal),
-    path('quit_val/', views.quitVal)
+    path('quit_val/', views.quitVal),
+
+    path('record_submit_cword/', views.recordSubmitCWord),
+    path('get_cword/', views.getCWord),
+    path('record_issue_cword/', views.recordIssueCWord)
 ]

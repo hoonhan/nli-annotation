@@ -15,7 +15,7 @@ from collections import Counter
 import random
 
 from .models import Premise, User, Issue, Submit, WordCnt
-from .models import VUser, VSubmit, VPair
+from .models import VUser, VSubmit, VPair, CSubmit, CIssue
 
 @csrf_exempt
 def checkUser(request):
@@ -55,10 +55,11 @@ def getPremise(request):
     if request.method == 'GET':
         mturk_id = request.GET['mturk_id']
         user = User.objects.get(mturk_id=mturk_id)
-        # context_step = 0으로 
+        
         response = {
             'predone': user.preSurveyDone,
             'step': user.step,
+            'type': user.ctype,
             'premise': Premise.objects.get(id=user.step).text
         }
         return JsonResponse(response)
@@ -291,3 +292,81 @@ def quitVal(request):
         user.quit()
 
         return JsonResponse({})
+
+
+######################
+@csrf_exempt
+def recordSubmitCWord(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        mturk_id = data['mturk_id']
+        step = data['step']
+        text = data['response']
+        ctype = data['type']
+        cwords = data['cwords']
+        cword = data['cword']
+
+        user = User.objects.get(mturk_id=mturk_id)
+        premise = Premise.objects.get(id=step).text
+
+        if ctype == 2:
+            user.step_up()
+
+        class_name = ['ent', 'neu', 'con']
+
+        with transaction.atomic():
+            updateWordCnt(text, class_name[int(ctype)])
+
+        CSubmit.objects.create(user=user,
+                            premise=premise,
+                            text=text,
+                            ctype=ctype,
+                            cwords = cwords,
+                            cword = cword)
+    
+
+        return JsonResponse({})
+
+@csrf_exempt
+def getCWord(request):
+    if request.method == 'GET':
+        mturk_id = request.GET['mturk_id']
+        ctype = request.GET['type']
+        
+        user = User.objects.get(mturk_id=mturk_id)
+        user.set_ctype(ctype)
+
+        entry_map = {
+            0: 'ent_pmi',
+            1: 'neu_pmi',
+            2: 'con_pmi'
+        }
+        wordcnt = WordCnt.objects.filter(tot_cnt__gte = 10).values_list('word', entry_map[int(ctype)])
+        rules = wordcnt.order_by(entry_map[int(ctype)])[:5]
+
+        response = {
+            'cwords': list(map(lambda x: x[0], rules))
+        }
+        return JsonResponse(response)
+
+
+@csrf_exempt
+def recordIssueCWord(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        mturk_id = data['mturk_id']
+        step = data['step']
+        ctype = data['type']
+        issue = data['issue']
+        cwords = data['cwords']
+        cword = data['cword']
+
+        user = User.objects.get(mturk_id=mturk_id)
+        premise = Premise.objects.get(id=step).text
+        CIssue.objects.create(user=user,
+                            premise=premise,
+                            ctype=ctype,
+                            text=issue,
+                            cwords=cwords,
+                            cword=cword)
+        return HttpResponse('')
